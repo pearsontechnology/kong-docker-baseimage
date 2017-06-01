@@ -19,8 +19,10 @@ RUN rm -f kong-0.10.3.jessie_all.deb
 COPY kong-plugins/ /usr/local/share/lua/5.1/kong/plugins/
 
 COPY start-kong.sh /start-kong.sh
+COPY register-ui.sh /register-ui.sh
 
 RUN chmod +x /start-kong.sh
+RUN chmod +x /register-ui.sh
 
 # Use baseimage-docker's init system.
 CMD ["/sbin/my_init", "--", "/start-kong.sh"]
