@@ -36,7 +36,7 @@ First publish to the pearsontechnology Docker Hub account:
 
 ```
 docker tag kong-baseimage:0.10.3 pearsontechnology/kong:0.10.3
-docker push pearsontechnology/kong
+docker push pearsontechnology/kong:0.10.3
 ```
 
 Next log into master (or any other machine that has access to
