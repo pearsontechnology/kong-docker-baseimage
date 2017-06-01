@@ -43,7 +43,7 @@ Next log into master (or any other machine that has access to
 bitesize-registry.default.svc.cluster.local) and execute:
 
 ```
-docker pull pearsontechnology/kong
-docker tag pearsontechnology/kong bitesize-registry.default.svc.cluster.local:5000/baseimages/kong:0.10.3
+docker pull pearsontechnology/kong:0.10.3
+docker tag pearsontechnology/kong:0.10.3 bitesize-registry.default.svc.cluster.local:5000/baseimages/kong:0.10.3
 docker push bitesize-registry.default.svc.cluster.local:5000/baseimages/kong:0.10.3
 ```
