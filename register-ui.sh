@@ -8,4 +8,4 @@ curl -i -X POST \
 curl -i -X POST \
   --url http://localhost:8001/apis/ \
   -H "Content-Type: application/json" \
-  --data '{"name":"martingale-kong-api","hosts":"martingale.dev","uris":["/api/kong"],"upstream_url":"http://localhost:8001"}'
+  --data '{"name":"martingale-kong-api","hosts":"martingale-dev.prsn.io","uris":["/api/kong"],"upstream_url":"http://localhost:8001"}'
