@@ -29,10 +29,13 @@ Execute cleanup.sh to kill and then remove any running containers.
 
 ## Publish for use within Bitesize
 
+Once you have a working local version of the image the following steps should be
+used to publish the image for partners to consume.
+
 First publish to the pearsontechnology Docker Hub account:
 
 ```
-docker build -t pearsontechnology/kong:0.10.3 .
+docker tag kong-baseimage:0.10.3 pearsontechnology/kong:0.10.3
 docker push pearsontechnology/kong
 ```
 
