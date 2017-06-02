@@ -16,6 +16,7 @@ RUN dpkg -i kong-0.10.3.jessie_all.deb
 
 RUN rm -f kong-0.10.3.jessie_all.deb
 
+COPY kong-plugins/ /usr/local/share/lua/5.1/kong/custom-plugins/
 COPY kong-plugins/ /usr/local/share/lua/5.1/kong/plugins/
 
 COPY start-kong.sh /start-kong.sh
