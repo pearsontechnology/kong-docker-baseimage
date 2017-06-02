@@ -5,7 +5,9 @@ set -e
 # Disabling nginx daemon mode
 export KONG_NGINX_DAEMON="off"
 if [[ "$KONG_CUSTOM_PLUGINS" == "" ]]; then
-  export KONG_CUSTOM_PLUGINS=rewrite,external-oauth,upstream-auth-basic
+  cd /usr/local/share/lua/5.1/kong/plugins/
+  kong_plugins=`ls -dm * | sed 's/,[ \t\n\r]*/,/g'`
+  export KONG_CUSTOM_PLUGINS=$kong_plugins
 fi
 
 echo "Kong Database "$KONG_DATABASE
