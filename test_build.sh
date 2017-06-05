@@ -28,13 +28,13 @@ docker rm kong-baseimage
 docker rmi kong-baseimage:0.10.3
 
 echo "Starting Cassandra"
-docker run -d --name kong-baseimage-database \
+docker run -d --name kong-database \
                 -p 9042:9042 \
                 cassandra:3
 
 echo "Waiting for Cassandra to come online"
 while true; do
-  liveness=`docker exec -it kong-baseimage-database  cqlsh -e "SELECT release_version FROM system.local"`
+  liveness=`docker exec -it kong-database  cqlsh -e "SELECT release_version FROM system.local"`
   isAlive=`echo $liveness | grep "release_version"`
   if [[ "$isAlive" != "" ]]; then
     break;
@@ -45,8 +45,8 @@ done
 docker build -t kong-baseimage:0.10.3 .
 
 if [[ "$DEBUG" == "true" ]]; then
-  docker run -it --name kong-baseimage \
-    --link kong-baseimage-database:kong-database \
+  docker run -it --name kong \
+    --link kong-database:kong-database \
     -e "KONG_DATABASE=cassandra" \
     -e "KONG_CASSANDRA_CONTACT_POINTS=kong-database" \
     -e "KONG_PG_HOST=kong-database" \
@@ -59,8 +59,8 @@ if [[ "$DEBUG" == "true" ]]; then
     /bin/bash
     exit 1
 else
-  docker run -d --name kong-baseimage \
-    --link kong-baseimage-database:kong-database \
+  docker run -d --name kong \
+    --link kong-database:kong-database \
     -e "KONG_DATABASE=cassandra" \
     -e "KONG_CASSANDRA_CONTACT_POINTS=kong-database" \
     -e "KONG_PG_HOST=kong-database" \
