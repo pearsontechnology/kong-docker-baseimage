@@ -5,6 +5,10 @@ and sets up Kong.
 
 ## Build/Test
 
+Increment the value at the end of the version in version file.  So if the contents were 0.10.3-1 you would change this to 0.10.3-2
+
+Note the new version as in the rest of the document it will be referenced as $KONG_VERSION
+
 Execute ./test_build.sh in order to start cassandra and kong in local mode
 
 ```
@@ -32,18 +36,21 @@ Execute cleanup.sh to kill and then remove any running containers.
 Once you have a working local version of the image the following steps should be
 used to publish the image for partners to consume.
 
-First publish to the pearsontechnology Docker Hub account:
+First make sure you have checked your changes into github.
+
+Next publish to the pearsontechnology Docker Hub account by running the ./publish.sh script:
 
 ```
-docker tag kong-baseimage:0.10.3 pearsontechnology/kong:0.10.3
-docker push pearsontechnology/kong:0.10.3
+./publish.sh
 ```
 
-Next log into master (or any other machine that has access to
+Finally log into master (or any other machine that has access to
 bitesize-registry.default.svc.cluster.local) and execute:
 
+**NOTE:** A proper script should be output from publish.sh that you can copy/paste.
+
 ```
-docker pull pearsontechnology/kong:0.10.3
-docker tag pearsontechnology/kong:0.10.3 bitesize-registry.default.svc.cluster.local:5000/baseimages/kong:0.10.3
-docker push bitesize-registry.default.svc.cluster.local:5000/baseimages/kong:0.10.3
+docker pull pearsontechnology/kong:$KONG_VERSION
+docker tag pearsontechnology/kong:$KONG_VERSION bitesize-registry.default.svc.cluster.local:5000/baseimages/kong:$KONG_VERSION
+docker push bitesize-registry.default.svc.cluster.local:5000/baseimages/kong:$KONG_VERSION
 ```

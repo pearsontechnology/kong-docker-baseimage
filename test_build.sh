@@ -24,8 +24,10 @@ for container in $containers; do
   docker rm $container
 done
 
+KONG_VERSION=`cat version | sed 's/^[[:space:]]*//g' | sed 's/*[[:space:]]$//g'`
+
 docker rm kong-baseimage
-docker rmi kong-baseimage:0.10.3
+docker rmi kong-baseimage:$KONG_VERSION
 
 echo "Starting Cassandra"
 docker run -d --name kong-database \
@@ -42,7 +44,9 @@ while true; do
   sleep 1
 done
 
-docker build -t kong-baseimage:0.10.3 .
+echo "Building kong version $VERSION"
+
+docker build -t kong-baseimage:$KONG_VERSION .
 
 if [[ "$DEBUG" == "true" ]]; then
   docker run -it --name kong \
@@ -55,7 +59,7 @@ if [[ "$DEBUG" == "true" ]]; then
     -p 8001:8001 \
     -p 7946:7946 \
     -p 7946:7946/udp \
-    kong-baseimage:0.10.3 \
+    kong-baseimage:$KONG_VERSION \
     /bin/bash
     exit 1
 else
@@ -69,7 +73,7 @@ else
     -p 8001:8001 \
     -p 7946:7946 \
     -p 7946:7946/udp \
-    kong-baseimage:0.10.3
+    kong-baseimage:$KONG_VERSION
 fi
 
 echo "Waiting for kong to start"

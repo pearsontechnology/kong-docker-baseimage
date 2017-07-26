@@ -13,11 +13,13 @@ do
   shift # past argument or value
 done
 
+KONG_VERSION=`cat version | sed 's/^[[:space:]]*//g' | sed 's/*[[:space:]]$//g'`
+
 docker kill kong
 docker rm kong
-docker rmi kong-baseimage:0.10.3
+docker rmi kong-baseimage:$KONG_VERSION
 
-docker build -t kong-baseimage:0.10.3 .
+docker build -t kong-baseimage:$KONG_VERSION .
 
 if [[ "$DEBUG" == "true" ]]; then
   docker run -it --name kong \
@@ -30,7 +32,7 @@ if [[ "$DEBUG" == "true" ]]; then
     -p 8001:8001 \
     -p 7946:7946 \
     -p 7946:7946/udp \
-    kong-baseimage:0.10.3 \
+    kong-baseimage:$KONG_VERSION \
     /bin/bash
   exit 0
 fi
@@ -45,7 +47,7 @@ docker run -d --name kong \
   -p 8001:8001 \
   -p 7946:7946 \
   -p 7946:7946/udp \
-  kong-baseimage:0.10.3
+  kong-baseimage:$KONG_VERSION
 
 curl -s localhost:8001
 kongAlive=$?
