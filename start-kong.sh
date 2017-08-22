@@ -2,6 +2,8 @@
 
 set -e
 
+export KONG_LOG_LEVEL=debug
+
 # Disabling nginx daemon mode
 export KONG_NGINX_DAEMON="off"
 if [[ "$KONG_CUSTOM_PLUGINS" == "" ]]; then
@@ -13,5 +15,6 @@ fi
 echo "Kong Database "$KONG_DATABASE
 echo "Kong custom plugins "$KONG_CUSTOM_PLUGINS
 
-echo "Starting Kong"
+echo "Starting Kong using:"
+echo "kong start $@"
 kong start "$@"

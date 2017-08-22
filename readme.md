@@ -3,6 +3,14 @@
 Based on https://github.com/phusion/baseimage-docker this baseimage installs
 and sets up Kong.
 
+## Included 3rd party plugins
+
+ * dynamic-access-control
+ * external-oauth
+ * oidc
+ * rewrite
+ * upstream-auth-basic
+
 ## Build/Test
 
 Increment the value at the end of the version in version file.  So if the contents were 0.10.3-1 you would change this to 0.10.3-2
