@@ -40,6 +40,11 @@ RUN chmod +x /start-kong.sh
 RUN chmod +x /start-kong-envconsul.sh
 RUN chmod +x /register-ui.sh
 
+RUN mkdir -p /usr/local/kong/logs \
+    && ln -sf /tmp/logpipe /usr/local/kong/logs/access.log \
+    && ln -sf /tmp/logpipe /usr/local/kong/logs/serf.log \
+    && ln -sf /tmp/logpipe /usr/local/kong/logs/error.log
+
 CMD ["/start-kong.sh", "-vv", "--nginx-conf", "/nginx.conf"]
 
 # Clean up APT when done.
