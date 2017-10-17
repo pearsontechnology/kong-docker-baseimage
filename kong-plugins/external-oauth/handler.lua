@@ -17,7 +17,6 @@ local BasePlugin = require "kong.plugins.base_plugin"
 local access = require "kong.plugins.external-oauth.access"
 
 local ExtOauthPlugin = BasePlugin:extend()
-ExtOauthPlugin.PRIORITY = 900;
 
 function ExtOauthPlugin:new()
 	ExtOauthPlugin.super.new(self, "external-oauth")
