@@ -4,8 +4,8 @@ KONG_VERSION=`cat version | sed 's/^[[:space:]]*//g' | sed 's/*[[:space:]]$//g'`
 
 echo "Killing running kong container"
 
-docker kill kong
-docker rm kong
+docker kill kong-baseimage
+docker rm kong-baseimage
 
 echo "Removing base image $KONG_VERSION"
 
@@ -17,7 +17,7 @@ docker build -t kong-baseimage:$KONG_VERSION .
 
 echo "Starting Kong $KONG_VERSION"
 
-docker run -d --name kong \
+docker run -d --name kong-baseimage \
   --link kong-database:kong-database \
   -e "KONG_DATABASE=cassandra" \
   -e "KONG_CASSANDRA_CONTACT_POINTS=kong-database" \

@@ -6,6 +6,7 @@ export KONG_LOG_LEVEL=debug
 
 # Disabling nginx daemon mode
 export KONG_NGINX_DAEMON="off"
+export KONG_ADMIN_LISTEN="0.0.0.0:8001,0.0.0.0:8444 ssl"
 
 rm -f /tmp/logpipe
 mkfifo -m 666 /tmp/logpipe

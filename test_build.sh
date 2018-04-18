@@ -46,10 +46,17 @@ done
 
 echo "Building kong version $VERSION"
 
-docker build -t kong-baseimage:$KONG_VERSION .
+docker build --rm -t kong-baseimage:$KONG_VERSION .
+
+docker run --rm --name kong-migrations \
+    --link kong-database:kong-database \
+    -e "KONG_DATABASE=cassandra" \
+    -e "KONG_CASSANDRA_CONTACT_POINTS=kong-database" \
+    -e "KONG_PG_HOST=kong-database" \
+    kong-baseimage:$KONG_VERSION kong migrations up
 
 if [[ "$DEBUG" == "true" ]]; then
-  docker run -it --name kong \
+  docker run -it --name kong-baseimage-debug \
     --link kong-database:kong-database \
     -e "KONG_DATABASE=cassandra" \
     -e "KONG_CASSANDRA_CONTACT_POINTS=kong-database" \
@@ -63,7 +70,7 @@ if [[ "$DEBUG" == "true" ]]; then
     /bin/bash
     exit 1
 else
-  docker run -d --name kong \
+  docker run -d --name kong-baseimage \
     --link kong-database:kong-database \
     -e "KONG_DATABASE=cassandra" \
     -e "KONG_CASSANDRA_CONTACT_POINTS=kong-database" \
