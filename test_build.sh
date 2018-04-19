@@ -44,7 +44,7 @@ while true; do
   sleep 1
 done
 
-echo "Building kong version $VERSION"
+echo "Building kong version $KONG_VERSION"
 
 docker build --rm -t kong-baseimage:$KONG_VERSION .
 
