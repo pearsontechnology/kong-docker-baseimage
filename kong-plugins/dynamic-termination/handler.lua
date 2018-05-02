@@ -63,6 +63,7 @@ local function get_req(get_body)
   local query = req_get_uri_args()
   local payload = decode_body(content_type, body, content_type_value)
   local path = ngx.var.request_uri
+  local host = headers.host
   return {
     content_type_value = content_type_value,
     content_type = content_type,
@@ -72,6 +73,7 @@ local function get_req(get_body)
     body = body,
     payload = payload,
     query = query,
+    host = host
   }
 end
 
@@ -100,6 +102,62 @@ local TerminationHandler = BasePlugin:extend()
 TerminationHandler.PRIORITY = 2
 TerminationHandler.VERSION = "0.0.1"
 
+local function buildHostHeader(newHost)
+  local u = url.parse(newHost)
+  local hostHeader = u.host
+  if u.port then
+    hostHeader = hostHeader .. ":" .. u.port
+  end
+  return hostHeader
+end
+
+local function replaceHost(url, newHost)
+  local pathIndex = url:find('[^/]/[^/]')
+
+  if not pathIndex then
+    if newHost:find('[^/]/[^/]') == nil and newHost:sub(#newHost) ~= "/" then
+      return newHost .. "/"
+    end
+
+    return newHost
+  end
+
+  if newHost:sub(#newHost) == "/" then
+    newHost = newHost:sub(1, -2)
+  end
+
+  local path = url:sub(pathIndex + 1)
+  return newHost .. path
+end
+
+local function appendPath(currentPath, newHost)
+  local newHostPathIndex = newHost:find('[^/]/[^/]')
+
+  if currentPath == "/" then
+    currentPath = ""
+  end
+
+  if newHostPathIndex then
+    return newHost:sub(newHostPathIndex+1) .. currentPath
+  end
+
+  return currentPath
+end
+
+local function switchUpstream(newHost)
+  local hostHeader = buildHostHeader(newHost)
+  ngx.req.set_header("host", hostHeader)
+  if ngx.ctx.upstream_url then
+    ngx.var.upstream_host = hostHeader
+    ngx.ctx.upstream_url = replaceHost(ngx.ctx.upstream_url, newHost)
+    return
+  end
+
+  local newPath = appendPath(ngx.var.upstream_uri, newHost)
+  ngx.var.upstream_uri = newPath
+  ngx.ctx.api.upstream_url = replaceHost(ngx.ctx.api.upstream_url, newHost)
+end
+
 function TerminationHandler:new()
   TerminationHandler.super.new(self, "dynamic-termination")
 end
@@ -115,6 +173,10 @@ function TerminationHandler:access(conf)
 
   if not response then
     return
+  end
+
+  if response.upstream_url then
+    return switchUpstream(response.upstream_url)
   end
 
   local response_status_code = response.status_code
